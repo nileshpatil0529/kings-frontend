@@ -1,0 +1,70 @@
+<div class="center-align">
+  <mat-card class="login-card">
+    <div class="center-align">
+      <img
+        class="img-align"
+        src="./../../../assets/img/sap-sithi.png"
+        alt="strow"
+      />
+    </div>
+    <h3 class="center-align">Login to play</h3>
+    <mat-card-content>
+      <mat-divider class="my-3"></mat-divider>
+      <form [formGroup]="myForm">
+        <!-- Login input fileld -->
+        <mat-form-field class="example-full-width">
+          <mat-label>Email or Mobile no.</mat-label>
+          <input
+            type="text"
+            matInput
+            maxlength="10"
+            formControlName="mobile"
+          />
+          <mat-error *ngIf="myForm.get('username')?.hasError('phone')">
+            Please enter a valid mobile number
+          </mat-error>
+        </mat-form-field>
+        <!-- Password Field -->
+        <mat-form-field class="example-full-width">
+          <mat-label>Password</mat-label>
+          <input
+            [type]="hide ? 'password' : 'text'"
+            matInput
+            formControlName="password"
+          />
+          <button
+            type="button"
+            mat-icon-button
+            matSuffix
+            (click)="hide = !hide"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </button>
+          <mat-error *ngIf="myForm.get('password')?.hasError('pattern')">
+            Please enter a valid password address
+          </mat-error>
+          <mat-error *ngIf="myForm.get('password')?.hasError('required')"
+            >Password is required</mat-error
+          >
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    <mat-card-actions class="login-btn mb-5">
+      <button routerLink="/register" type="button" mat-button color="primary">
+        Create new account ?
+      </button>
+      &nbsp;&nbsp;&nbsp;
+      <button
+        (click)="login()"
+        [disabled]="myForm.invalid"
+        type="submit"
+        mat-raised-button
+        color="primary"
+      >
+        Login
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

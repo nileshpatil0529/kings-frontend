@@ -1,0 +1,14 @@
+.login-card {
+    width: 100%;
+    height: 700px;
+}
+
+.end-align {
+    position: absolute;
+    right: 0;
+}
+
+.center-align {
+    display: flex;
+    justify-content: center;
+}

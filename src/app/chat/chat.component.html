@@ -1,0 +1,100 @@
+<main class="content">
+  <div class="container p-0">
+    <div class="card">
+      <div>
+        <div class="position-relative">
+          <div class="chat-messages p-4">
+            <div *ngFor="let data of chat">
+              <div [className]="data.sender == userData.mobile ? mySelf : him">
+                <div>
+                  <img
+                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                    class="rounded-circle mr-1"
+                    alt="Chris Wood"
+                    width="40"
+                    height="40"
+                  />
+                  <div class="text-muted small text-nowrap mt-2">
+                    {{ data.time }}
+                  </div>
+                </div>
+                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                  <!-- <div class="font-weight-bold mb-1">{{ data.mobile == userData.mobile ? data.you_name : data.oppnent_name }}</div> -->
+                  <p *ngIf="!type(checkLink(data.message))">
+                    {{ checkLink(data.message) }}
+                  </p>
+                  <div *ngIf="type(checkLink(data.message))">
+                    <a
+                      mat-raised-button
+                      href="https://lk.gggred.com/?rmc={{
+                        checkLink(data.message)
+                      }}&gt=0"
+                      color="primary"
+                      target="_blank"
+                      >Start Game</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-grow-0 py-3 px-4 border-top">
+          <div class="button-container mb-2">
+            <button
+              type="button"
+              accept="image/*"
+              mat-raised-button
+              color="primary"
+              (click)="win.click()"
+            >
+              Win
+            </button>
+            <input
+              hidden
+              (change)="onFileSelected()"
+              #win
+              type="file"
+              id="file"
+            />
+            <button mat-raised-button color="accent">Accept Defeat</button>
+            <button
+              type="button"
+              mat-raised-button
+              color="warn"
+              (click)="report.click()"
+            >
+              Report
+            </button>
+            <input
+              hidden
+              accept="image/*"
+              (change)="onFileSelected()"
+              #report
+              type="file"
+              id="file"
+            />
+          </div>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              [formControl]="msgText"
+              placeholder="Type your message"
+            />
+            <button
+              mat-raised-button
+              [disabled]="msgText.invalid"
+              (click)="chatFun()"
+              type="button"
+              color="primary"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

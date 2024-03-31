@@ -1,0 +1,20 @@
+.end-align {
+    position: absolute;
+    right: 0;
+}
+
+.center-align {
+    display: flex;
+    justify-content: center;
+}
+
+img {
+    width: 150px;
+    border: 10px solid palevioletred;
+}
+
+@media (min-width: 765px) and (max-width: 2000px) {
+    img {
+        width: 200px;
+    }
+}

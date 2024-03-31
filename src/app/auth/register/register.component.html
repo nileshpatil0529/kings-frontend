@@ -1,0 +1,92 @@
+<div class="center-align">
+  <mat-card class="login-card">
+    <div class="center-align ">
+      <img class="img-align" src="./../../../assets/img/white-strow.png" alt="strow">
+    </div>
+    <h3 class="center-align">Create new account</h3>
+    <mat-card-content>
+      <mat-divider class="my-3"></mat-divider>
+      <form [formGroup]="myForm" class="example-form">
+        <!-- User username -->
+        <mat-form-field class="example-full-width">
+          <mat-label>User Name</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="username"
+          />
+          <mat-error *ngIf="myForm.get('username')?.hasError('required')"
+            >User name is required</mat-error
+          >
+          <mat-error *ngIf="myForm.get('username')?.hasError('maxlength')"
+            >User name should be less than 10 characters</mat-error
+          >
+        </mat-form-field>
+        <!-- Email or mobile -->
+        <mat-form-field class="example-full-width">
+          <mat-label>Mobile No</mat-label>
+          <input
+            type="text"
+            matInput
+            maxlength="10"
+            formControlName="mobile"
+          />
+          <mat-error *ngIf="myForm.get('mobile')?.hasError('minlength') || myForm.get('mobile')?.hasError('maxlength') || myForm.get('mobile')?.hasError('pattern')">
+            Please enter a valid mobile number
+          </mat-error>
+          <mat-error *ngIf="myForm.get('mobile')?.hasError('exist')">
+            Mobile number already exist
+          </mat-error>
+          <mat-error
+            *ngIf="myForm.get('mobile')?.hasError('required')"
+            >Mobile no is required</mat-error
+          >
+        </mat-form-field>
+        <!-- Password -->
+        <mat-form-field class="example-full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+          <mat-error *ngIf="myForm.get('password')?.hasError('pattern')">
+            Please enter a valid password address
+          </mat-error>
+          <mat-error *ngIf="myForm.get('password')?.hasError('required')"
+            >Password is required</mat-error
+          >
+        </mat-form-field>
+        <!-- Confirm Password Field -->
+        <mat-form-field class="example-full-width" *ngIf="myForm.get('password')?.valid">
+          <mat-label>Confirm Password</mat-label>
+          <input [type]="hidep ? 'password' : 'text'" matInput formControlName="confirmPasswordControl">
+          <button type="button" mat-icon-button matSuffix (click)="hidep = !hidep" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <mat-icon>{{hidep ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error
+            *ngIf="
+              myForm.get('confirmPasswordControl')?.hasError('passwordNotMatch')
+            "
+          >
+            Confirm password should match with password
+          </mat-error>
+          <mat-error
+            *ngIf="myForm.get('confirmPasswordControl')?.hasError('required')"
+            >Password is required</mat-error
+          >
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    <mat-card-actions class="login-btn mb-5">
+      <button
+        (click)="onClick()"
+        type="button"
+        [disabled]="myForm.invalid"
+        mat-raised-button
+        color="primary"
+      >
+        Create Account
+      </button>
+    </mat-card-actions>
+    <!-- <mat-card-footer>
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </mat-card-footer> -->
+  </mat-card>
+</div>
