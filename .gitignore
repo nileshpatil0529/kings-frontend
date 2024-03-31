@@ -5,7 +5,9 @@
 /tmp
 /out-tsc
 /bazel-out
-
+.vscode
+tsconfig.spec.json
+.editorconfig
 # Node
 node_modules
 npm-debug.log
