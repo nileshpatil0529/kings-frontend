@@ -2,24 +2,16 @@
   <mat-card class="login-card">
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>User Name</mat-card-title>
-      <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-      <span class="text-success end-align balance">Balance: 1000</span>
+      <mat-card-title>{{ this.userData.username }}</mat-card-title>
+      <mat-card-subtitle>{{ this.userData.mobile }}</mat-card-subtitle>
+      <span class="text-success end-align balance">Balance: {{ this.userData.balance }}</span>
       <button mat-mini-fab color="accent" class="end-align mr-4">
         <mat-icon>add</mat-icon>
       </button>
     </mat-card-header>
     <mat-card-content>
       <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-        <a
-          mat-tab-link
-          *ngFor="let link of navLinks"
-          [routerLink]="link.path"
-          routerLinkActive
-          #rla="routerLinkActive"
-          [active]="rla.isActive"
-          >{{ link.label }}</a
-        >
+        <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">{{ link.label }}</a>
       </nav>
       <mat-tab-nav-panel #tabPanel>
         <router-outlet></router-outlet>

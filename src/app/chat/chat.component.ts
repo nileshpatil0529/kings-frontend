@@ -14,24 +14,18 @@ export class ChatComponent implements OnInit {
   chat: any = [];
   getUserLocal: any;
   userData: any;
+  players: any;
 
   msgText = new FormControl('', [Validators.required]);
 
-  constructor(
-    private chatService: ChatService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private chatService: ChatService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.getUserLocal = localStorage.getItem('userData');
     this.userData = JSON.parse(this.getUserLocal);
-
-    this.route.params.subscribe((criteria) => {
-      this.chatService.matchGamer(criteria);
-    });
-
+    this.players = this.chatService.getPlayersInfo();
     this.chatService.getMessage().subscribe((data) => {
-      this.chat.push(data.message);
+      this.chat.push(data);
     });
   }
 
@@ -44,7 +38,7 @@ export class ChatComponent implements OnInit {
       time: currentISTTime,
       user: this.userData.username,
       message: this.msgText.value,
-      mobile: this.userData.mobile
+      mobile: this.userData.mobile,
     };
     this.msgText.setValue('');
     this.chatService.sendMessage(data);

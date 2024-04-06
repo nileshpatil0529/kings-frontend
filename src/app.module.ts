@@ -10,6 +10,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app/app.component';
@@ -28,6 +29,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SnakbarComponent } from './app/partials/snakbar/snakbar.component';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -62,7 +64,10 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MatTabsModule,
     MatSelectModule,
     HttpClientModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    BrowserAnimationsModule,
+    NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
   ],
   providers: [],
   bootstrap: [AppComponent]

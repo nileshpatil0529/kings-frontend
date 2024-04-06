@@ -1,5 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
+import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -9,8 +11,9 @@ export class ChatService implements OnInit {
   playersPaire: any = {};
   localUser: any;
   userData: any;
+  playersPaireSub = new Subject<number>();
 
-  constructor(private socket: Socket) {}
+  constructor(private socket: Socket, private router: Router) {}
 
   ngOnInit(): void {
     this.localUser = localStorage.getItem('userData');
@@ -18,13 +21,13 @@ export class ChatService implements OnInit {
   }
 
   sendMessage(msg: any) {
-    this.playersPaire['message'] = {
+    let message = {
+      room: this.playersPaire.room,
       message: msg.message,
       time: msg.time,
-      you:  this.playersPaire.you,
-      sender: this.playersPaire.sender
-    }
-    this.socket.emit('message', this.playersPaire);
+      sender: this.playersPaire.sender,
+    };
+    this.socket.emit('message', message);
   }
 
   getMessage() {
@@ -35,18 +38,20 @@ export class ChatService implements OnInit {
     this.socket.emit('matchCriteria', criteria);
     return this.socket.fromEvent('matchCriteria').subscribe((data: any) => {
       if (data) {
-        this.playersPaire = {
-          room: data.opponent.mobile + data.you.mobile,
-          opponent: data.opponent.mobile,
-          opponent_name: data.opponent.user,
-          you: data.you.mobile,
-          you_name: data.you.user,
-          amount: data.opponent.amount,
-          game: data.opponent.game,
-          sender: criteria.mobile
-        };
+        this.playersPaire = data;
+        this.playersPaire['sender'] = criteria.mobile;
         this.socket.emit('join', this.playersPaire['room']);
+        this.playersPaireSub.next(this.playersPaire);
+        this.router.navigate(['/chat']);
       }
     });
+  }
+
+  getPlayersInfo() {
+    return this.playersPaire;
+  }
+
+  getGameStart() {
+    return this.playersPaireSub;
   }
 }
