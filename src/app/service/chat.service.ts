@@ -1,24 +1,20 @@
-import { Injectable, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
-import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChatService implements OnInit {
+export class ChatService {
   playersPaire: any = {};
   localUser: any;
   userData: any;
-  playersPaireSub = new Subject<number>();
 
-  constructor(private socket: Socket, private router: Router) {}
-
-  ngOnInit(): void {
-    this.localUser = localStorage.getItem('userData');
-    this.userData = JSON.parse(this.userData);
-  }
+  constructor(private socket: Socket, private router: Router, private http: HttpClient, private spinner: NgxSpinnerService, private userService: UserService) {}
 
   sendMessage(msg: any) {
     let message = {
@@ -37,21 +33,34 @@ export class ChatService implements OnInit {
   matchGamer(criteria: any) {
     this.socket.emit('matchCriteria', criteria);
     return this.socket.fromEvent('matchCriteria').subscribe((data: any) => {
-      if (data) {
-        this.playersPaire = data;
-        this.playersPaire['sender'] = criteria.mobile;
-        this.socket.emit('join', this.playersPaire['room']);
-        this.playersPaireSub.next(this.playersPaire);
-        this.router.navigate(['/chat']);
+      if (data == 2) {
+        this.spinner.hide();
+        this.userService.openSnackBar('Server Error', 'error');
+      } else {
+        if (data) {
+          this.playersPaire = data;
+          this.playersPaire['sender'] = criteria.mobile;
+          this.socket.emit('join', this.playersPaire['room']);
+          this.router.navigate(['/chat']);
+        }
       }
     });
   }
 
-  getPlayersInfo() {
-    return this.playersPaire;
+  join(player: any){
+    this.playersPaire = player;
+    this.socket.emit('join', this.playersPaire['room']);
   }
 
-  getGameStart() {
-    return this.playersPaireSub;
+  getGame(mobile: any) {
+    return this.http.post('http://localhost:3000/api/games', mobile);
+  }
+
+  chatHistory(file: any) {
+    return this.http.post('http://localhost:3000/api/msg-history', file);
+  }
+
+  getPlayersInfo() {
+    return this.playersPaire;
   }
 }

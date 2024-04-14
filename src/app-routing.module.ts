@@ -8,6 +8,7 @@ import { ChatComponent } from './app/chat/chat.component';
 import { HistoryComponent } from './app/history/history.component';
 import { AccountComponent } from './app/account/account.component';
 import { AuthGuardGuard } from './app/service/auth-guard.guard';
+import { ChatGuard } from './app/service/chat.guard';
 
 const routes: Routes = [
   // {path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -19,9 +20,9 @@ const routes: Routes = [
     component: DashboardComponent,
     children: [
       { path: '', redirectTo: 'games', pathMatch: 'full' },
-      { path: 'games', canActivate: [AuthGuardGuard], component: GameComponent },
-      { path: 'history', canActivate: [AuthGuardGuard], component: HistoryComponent },
-      { path: 'account', canActivate: [AuthGuardGuard], component: AccountComponent },
+      { path: 'games', canActivate: [AuthGuardGuard, ChatGuard], component: GameComponent },
+      { path: 'history', canActivate: [AuthGuardGuard, ChatGuard], component: HistoryComponent },
+      { path: 'account', canActivate: [AuthGuardGuard, ChatGuard], component: AccountComponent },
     ],
   },
 ];

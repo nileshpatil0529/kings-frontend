@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../service/chat.service';
 import { FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -14,19 +14,36 @@ export class ChatComponent implements OnInit {
   chat: any = [];
   getUserLocal: any;
   userData: any;
-  players: any;
+  players: any = { player1_name: '', player2_name: '' };
 
   msgText = new FormControl('', [Validators.required]);
 
-  constructor(private chatService: ChatService, private route: ActivatedRoute) {}
+  constructor(private chatService: ChatService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.getUserLocal = localStorage.getItem('userData');
     this.userData = JSON.parse(this.getUserLocal);
-    this.players = this.chatService.getPlayersInfo();
+    this.onInitCheck();
     this.chatService.getMessage().subscribe((data) => {
       this.chat.push(data);
     });
+  }
+
+  onInitCheck() {
+    if (this.chat.length === 0) {
+      this.chatService.getGame({ mobile: this.userData.mobile }).subscribe((data: any) => {
+        this.players = data['results'];
+        if (this.players) {
+          this.players['sender'] = this.userData.mobile;
+          this.chatService.join(this.players);
+          this.chatService.chatHistory({ file: this.players.room }).subscribe((data: any) => {
+            this.chat = data;
+          });
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+      });
+    }
   }
 
   chatFun() {
@@ -60,8 +77,9 @@ export class ChatComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         let srcResult = e.target.result;
+        console.log(srcResult);
       };
-      reader.readAsArrayBuffer(inputNode.files[0]);
+      // reader.readAsArrayBuffer(inputNode.files[0]);
     }
   }
 }
