@@ -1,0 +1,10 @@
+.end-align {
+    position: absolute;
+    right: 0;
+}
+
+.mat-mdc-fab.mat-accent, .mat-mdc-mini-fab.mat-accent {
+    --mdc-fab-container-color: white;
+    --mdc-fab-icon-color: grey;
+    --mat-mdc-fab-color: grey;
+}

@@ -14,6 +14,7 @@ export class ChatComponent implements OnInit {
   chat: any = [];
   getUserLocal: any;
   userData: any;
+  room: any;
   players: any = { player1_name: '', player2_name: '' };
 
   msgText = new FormControl('', [Validators.required]);
@@ -35,6 +36,7 @@ export class ChatComponent implements OnInit {
         this.players = data['results'];
         if (this.players) {
           this.players['sender'] = this.userData.mobile;
+          this.room = this.players['room'];
           this.chatService.join(this.players);
           this.chatService.chatHistory({ file: this.players.room }).subscribe((data: any) => {
             this.chat = data;
@@ -71,15 +73,7 @@ export class ChatComponent implements OnInit {
     return typeof msg === 'number' ? true : false;
   }
 
-  onFileSelected() {
-    const inputNode: any = document.querySelector('#file');
-    if (typeof FileReader !== 'undefined') {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        let srcResult = e.target.result;
-        console.log(srcResult);
-      };
-      // reader.readAsArrayBuffer(inputNode.files[0]);
-    }
+  onFileSelected(state: any) {
+    this.chatService.openDialog(state, this.room, this.userData.mobile);
   }
 }

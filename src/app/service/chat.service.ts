@@ -5,6 +5,8 @@ import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserService } from './user.service';
+import {MatDialog} from '@angular/material/dialog';
+import { GameDialogComponent } from '../partials/game-dialog/game-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +16,7 @@ export class ChatService {
   localUser: any;
   userData: any;
 
-  constructor(private socket: Socket, private router: Router, private http: HttpClient, private spinner: NgxSpinnerService, private userService: UserService) {}
+  constructor(public dialog: MatDialog, private socket: Socket, private router: Router, private http: HttpClient, private spinner: NgxSpinnerService, private userService: UserService) {}
 
   sendMessage(msg: any) {
     let message = {
@@ -60,7 +62,21 @@ export class ChatService {
     return this.http.post('http://localhost:3000/api/msg-history', file);
   }
 
+  upload(data: any) {
+    return this.http.post('http://localhost:3000/api/upload', data);
+  }
+
   getPlayersInfo() {
     return this.playersPaire;
+  }
+
+  openDialog(state: any, room: any, sender: any): void {
+    this.dialog.open(GameDialogComponent, {
+      data: {state: state, room: room, sender: sender},
+    });
+  }
+
+  closeDialog() {
+    this.dialog.closeAll();
   }
 }

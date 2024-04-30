@@ -30,6 +30,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SnakbarComponent } from './app/partials/snakbar/snakbar.component';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { GameDialogComponent } from './app/partials/game-dialog/game-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -46,6 +48,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     HistoryComponent,
     AccountComponent,
     SnakbarComponent,
+    GameDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,6 +70,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MatSnackBarModule,
     MatProgressSpinnerModule,
     BrowserAnimationsModule,
+    MatDialogModule,
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
   ],
   providers: [],
