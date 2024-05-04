@@ -18,7 +18,7 @@ export class ChatGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     this.chatService.getGame({ mobile: this.mobile }).subscribe((data: any) => {
       if (data['results']) {
-        this.router.navigate(['/chat']);
+        data['results'].winer === '' ? this.router.navigate(['/chat']) : '';
       }
     });
     return true;

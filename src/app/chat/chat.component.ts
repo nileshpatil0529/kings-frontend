@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../service/chat.service';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { GameDialogComponent } from '../partials/game-dialog/game-dialog.component';
 
 @Component({
   selector: 'app-chat',
@@ -15,16 +17,33 @@ export class ChatComponent implements OnInit {
   getUserLocal: any;
   userData: any;
   room: any;
+  winer: any;
+  private audio!: HTMLAudioElement;
+  reporter: any;
   players: any = { player1_name: '', player2_name: '' };
 
   msgText = new FormControl('', [Validators.required]);
 
-  constructor(private chatService: ChatService, private route: ActivatedRoute, private router: Router) {}
+  constructor(public dialog: MatDialog, private chatService: ChatService, private route: ActivatedRoute, private router: Router) {
+    this.audio = new Audio();
+    this.audio.src = '../../assets/tune/ludo.wav';
+  }
 
   ngOnInit(): void {
     this.getUserLocal = localStorage.getItem('userData');
     this.userData = JSON.parse(this.getUserLocal);
     this.onInitCheck();
+    this.chatService.getGameStatus().subscribe((data) => {
+      if (data.stat.status === 'win') {
+        this.audio.play();
+        this.reporter = '';
+        this.winer = data.stat.sender.toString();
+      } else {
+        this.winer = '';
+        this.reporter = data.stat.sender.toString();
+      }
+      this.check();
+    });
     this.chatService.getMessage().subscribe((data) => {
       this.chat.push(data);
     });
@@ -33,8 +52,11 @@ export class ChatComponent implements OnInit {
   onInitCheck() {
     if (this.chat.length === 0) {
       this.chatService.getGame({ mobile: this.userData.mobile }).subscribe((data: any) => {
-        this.players = data['results'];
-        if (this.players) {
+        if (data['results']) {
+          this.players = data['results'];
+          this.winer = this.players.winer;
+          this.reporter = this.players.reporter;
+          this.check();
           this.players['sender'] = this.userData.mobile;
           this.room = this.players['room'];
           this.chatService.join(this.players);
@@ -45,6 +67,16 @@ export class ChatComponent implements OnInit {
           this.router.navigate(['/dashboard']);
         }
       });
+    }
+  }
+
+  check() {
+    if (this.winer === this.userData.mobile.toString() || this.winer == '') {
+      this.chatService.closeDialog();
+    } else if (this.reporter === this.userData.mobile.toString()) {
+      this.chatService.closeDialog();
+    } else {
+      this.onSubmit('report');
     }
   }
 
@@ -73,7 +105,12 @@ export class ChatComponent implements OnInit {
     return typeof msg === 'number' ? true : false;
   }
 
-  onFileSelected(state: any) {
-    this.chatService.openDialog(state, this.room, this.userData.mobile);
+  onSubmit(state: any) {
+    console.log(this.players);
+
+    this.dialog.open(GameDialogComponent, {
+      disableClose: true,
+      data: { state: state, room: this.players.room, sender: this.userData.mobile },
+    });
   }
 }

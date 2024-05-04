@@ -5,7 +5,7 @@ import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UserService } from './user.service';
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { GameDialogComponent } from '../partials/game-dialog/game-dialog.component';
 
 @Injectable({
@@ -15,8 +15,12 @@ export class ChatService {
   playersPaire: any = {};
   localUser: any;
   userData: any;
+  private audio!: HTMLAudioElement;
 
-  constructor(public dialog: MatDialog, private socket: Socket, private router: Router, private http: HttpClient, private spinner: NgxSpinnerService, private userService: UserService) {}
+  constructor(public dialog: MatDialog, private socket: Socket, private router: Router, private http: HttpClient, private spinner: NgxSpinnerService, private userService: UserService) {
+    this.audio = new Audio();
+    this.audio.src = '../../assets/tune/ludo.wav';
+  }
 
   sendMessage(msg: any) {
     let message = {
@@ -40,6 +44,7 @@ export class ChatService {
         this.userService.openSnackBar('Server Error', 'error');
       } else {
         if (data) {
+          this.audio.play();
           this.playersPaire = data;
           this.playersPaire['sender'] = criteria.mobile;
           this.socket.emit('join', this.playersPaire['room']);
@@ -49,9 +54,17 @@ export class ChatService {
     });
   }
 
-  join(player: any){
+  join(player: any) {
     this.playersPaire = player;
     this.socket.emit('join', this.playersPaire['room']);
+  }
+
+  gameStatus(data: any) {
+    this.socket.emit('status', data);
+  }
+
+  getGameStatus() {
+    return this.socket.fromEvent('status').pipe(map((data: any) => data));
   }
 
   getGame(mobile: any) {
@@ -66,13 +79,17 @@ export class ChatService {
     return this.http.post('http://localhost:3000/api/upload', data);
   }
 
+  updateGameStat(data: any) {
+    return this.http.post('http://localhost:3000/api/state-update', data);
+  }
+
   getPlayersInfo() {
     return this.playersPaire;
   }
 
   openDialog(state: any, room: any, sender: any): void {
     this.dialog.open(GameDialogComponent, {
-      data: {state: state, room: room, sender: sender},
+      data: { state: state, room: room, sender: sender },
     });
   }
 

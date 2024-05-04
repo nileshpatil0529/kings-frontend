@@ -32,6 +32,7 @@ import { SnakbarComponent } from './app/partials/snakbar/snakbar.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { GameDialogComponent } from './app/partials/game-dialog/game-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -71,6 +72,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MatProgressSpinnerModule,
     BrowserAnimationsModule,
     MatDialogModule,
+    MatSidenavModule,
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
   ],
   providers: [],
